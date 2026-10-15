@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "distinct challenge view, 5 widths, 16px mode labels",
+    "dialog opens without automatic share/copy; copy and denied-copy fallback; PNG QR decodes to selected unit",
+    "real 15-word completion uploads to current unit ranking; stars removed and score centered; top ranking defaults to mixed challenge",
+    "invitation restores result dialog and recipient opens matching unit",
+    "static preview starts instantly without API calls; honestly labeled local preview ranking"
+  ],
+  "errors": [],
+  "passed": true
+}

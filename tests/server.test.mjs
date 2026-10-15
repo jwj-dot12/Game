@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdtemp, rm, rmdir } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
 import { createGameServer, weekStart } from '../server.mjs';
 import { calculateResult } from '../server/game-rules.mjs';
 
@@ -38,7 +39,9 @@ test('scores are owned by a session, calculated, idempotent and ranked per playe
  const {send,advance}=await instance(t),playerId=randomUUID();
  const session=(await send('/api/public/game',{playerId,unit:'custom:new',count:2,words})).body;
  advance(4000);
- const payload={id:session.id,playerId,name:'花花',elapsed:2,events,score:999999,stars:99};
+ const payload={id:session.id,playerId,name:'花花',region:'上海',elapsed:2,events,score:999999,stars:99};
+ assert.equal((await send('/api/public/rankings',{...payload,region:'沪'.repeat(13)})).status,400);
+ assert.equal((await send('/api/public/rankings',{...payload,region:{city:'上海'}})).status,400);
  assert.equal((await send('/api/public/rankings',{...payload,playerId:randomUUID()})).status,400);
  assert.equal((await send('/api/public/rankings',{...payload,events:events.slice(0,1)})).status,400);
  assert.equal((await send('/api/public/rankings',{...payload,elapsed:100})).status,400);
@@ -48,6 +51,7 @@ test('scores are owned by a session, calculated, idempotent and ranked per playe
  await send('/api/public/rankings',{...payload,id:second.id,elapsed:4});
  const rank=(await send(`/api/public/rankings?unit=${session.unit}`)).body;
  assert.equal(rank.total,1);assert.equal(rank.rows.length,1);assert.equal(rank.rows[0].score,35);assert.equal(rank.rows[0].name,'花花');
+ assert.equal(rank.rows[0].region,'上海');
  assert.equal((await send('/api/public/rankings?unit=u0')).body.rows.length,0);
  advance(20000);assert.equal((await send(`/api/public/rankings?unit=${session.unit}&period=week`)).body.rows.length,0);
  assert.equal((await send(`/api/public/rankings?unit=${session.unit}&period=all`)).body.rows.length,1);
@@ -77,11 +81,31 @@ test('SQLite scores survive a server restart',async()=>{
   let base=await start();const playerId=randomUUID();
   const post=async(route,b)=>{const r=await fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});assert.equal(r.status,200);return r.json();};
   const session=await post('/api/public/game',{playerId,unit:'custom:new',count:2,words});clock+=4000;
-  await post('/api/public/rankings',{playerId,id:session.id,name:'重启验证',elapsed:2,events});await stop();
-  base=await start();const rankings=await (await fetch(base+`/api/public/rankings?unit=${session.unit}`)).json();assert.equal(rankings.total,1);assert.equal(rankings.rows[0].score,35);await stop();server=null;
+  await post('/api/public/rankings',{playerId,id:session.id,name:'重启验证',region:'杭州',elapsed:2,events});await stop();
+  base=await start();const rankings=await (await fetch(base+`/api/public/rankings?unit=${session.unit}`)).json();assert.equal(rankings.total,1);assert.equal(rankings.rows[0].score,35);assert.equal(rankings.rows[0].region,'杭州');await stop();server=null;
  }finally{
   if(server?.listening)await stop();
   for(const suffix of ['','-shm','-wal'])await rm(dbPath+suffix,{force:true});
   await rmdir(dir);
+ }
+});
+test('legacy scores migrate with Shanghai default and old clients can submit',async()=>{
+ const dir=await mkdtemp(path.join(os.tmpdir(),'word-pop-migration-')),dbPath=path.join(dir,'game.sqlite');
+ const legacy=new DatabaseSync(dbPath);
+ legacy.exec('CREATE TABLE scores (id TEXT PRIMARY KEY,player_id TEXT NOT NULL,name TEXT NOT NULL,unit TEXT NOT NULL,title TEXT NOT NULL,score INTEGER NOT NULL,elapsed INTEGER NOT NULL,accuracy INTEGER NOT NULL,stars INTEGER NOT NULL,at INTEGER NOT NULL)');
+ legacy.prepare('INSERT INTO scores VALUES (?,?,?,?,?,?,?,?,?,?)').run(randomUUID(),randomUUID(),'原有玩家','u0','Unit 1',100,60,100,3,Date.now());legacy.close();
+ let server;
+ try{
+  server=await createGameServer({dbPath});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  const base=`http://127.0.0.1:${server.address().port}`;
+  const old=(await (await fetch(base+'/api/public/rankings?unit=u0')).json()).rows[0];
+  assert.equal(old.name,'原有玩家');assert.equal(old.score,100);assert.equal(old.region,'上海');
+  const playerId=randomUUID(),post=async(route,body)=>{const res=await fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(res.status,200);return res.json();};
+  const session=await post('/api/public/game',{playerId,unit:'custom:new',count:2,words});
+  await post('/api/public/rankings',{playerId,id:session.id,name:'旧客户端',elapsed:2,events});
+  const row=(await (await fetch(base+`/api/public/rankings?unit=${session.unit}`)).json()).rows[0];assert.equal(row.region,'上海');
+ }finally{
+  if(server?.listening)await new Promise(r=>server.close(r));
+  for(const suffix of ['','-shm','-wal'])await rm(dbPath+suffix,{force:true});await rmdir(dir);
  }
 });

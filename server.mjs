@@ -34,10 +34,12 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
     CREATE TABLE IF NOT EXISTS scores (id TEXT PRIMARY KEY,player_id TEXT NOT NULL,name TEXT NOT NULL,unit TEXT NOT NULL,title TEXT NOT NULL,score INTEGER NOT NULL,elapsed INTEGER NOT NULL,accuracy INTEGER NOT NULL,stars INTEGER NOT NULL,at INTEGER NOT NULL);
     CREATE INDEX IF NOT EXISTS scores_unit_time ON scores(unit,at);
     CREATE INDEX IF NOT EXISTS sessions_player_time ON game_sessions(player_id,created_at);`);
+  // Existing scores keep their records when the region field is introduced.
+  if(!db.prepare('PRAGMA table_info(scores)').all().some(column=>column.name==='region'))db.exec("ALTER TABLE scores ADD COLUMN region TEXT NOT NULL DEFAULT '上海'");
   const server=http.createServer(async(req,res)=>{
     try{
       const url=new URL(req.url,'http://localhost');
-      if(req.method==='GET'&&url.pathname==='/healthz'){json(res,200,{ok:true,version:'1.5.0'});return;}
+      if(req.method==='GET'&&url.pathname==='/healthz'){json(res,200,{ok:true,version:'1.7.0'});return;}
       if(req.method==='POST'&&url.pathname==='/api/public/game'){
         const b=await readJSON(req,80000);
         if(typeof b.playerId!=='string'||!playerPattern.test(b.playerId))fail('玩家标识无效');
@@ -67,7 +69,7 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
         const unit=url.searchParams.get('unit')||'u0',period=url.searchParams.get('period')||'all';
         if(!unitPattern.test(unit))fail('请选择有效的词库');if(!['all','week'].includes(period))fail('请选择有效的排行周期');
         const start=period==='week'?weekStart(now()):0;
-        const rows=db.prepare('WITH ranked AS (SELECT *,ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY score DESC,elapsed ASC,at ASC) AS rn FROM scores WHERE unit=? AND at>=?) SELECT name,score,elapsed,accuracy,stars,at FROM ranked WHERE rn=1 ORDER BY score DESC,elapsed ASC,at ASC LIMIT 50').all(unit,start);
+        const rows=db.prepare('WITH ranked AS (SELECT *,ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY score DESC,elapsed ASC,at ASC) AS rn FROM scores WHERE unit=? AND at>=?) SELECT name,region,score,elapsed,accuracy,stars,at FROM ranked WHERE rn=1 ORDER BY score DESC,elapsed ASC,at ASC LIMIT 50').all(unit,start);
         const count=db.prepare('SELECT COUNT(DISTINCT player_id) AS n FROM scores WHERE unit=? AND at>=?').get(unit,start);
         json(res,200,{rows,total:count.n,updatedAt:now()});return;
       }
@@ -75,6 +77,8 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
         const b=await readJSON(req,100000);
         if(typeof b.id!=='string'||!uuidPattern.test(b.id)||typeof b.playerId!=='string'||!playerPattern.test(b.playerId))fail('挑战标识无效');
         if(typeof b.name!=='string'||!b.name.trim()||b.name.trim().length>16)fail('请填写 1–16 字的昵称');
+        if(b.region!==undefined&&(typeof b.region!=='string'||b.region.trim().length>12))fail('地域最多 12 字');
+        const region=b.region?.trim()||'上海';
         if(!Number.isInteger(b.elapsed)||b.elapsed<1||b.elapsed>7200)fail('挑战时间无效');
         const session=db.prepare('SELECT * FROM game_sessions WHERE id=? AND player_id=?').get(b.id,b.playerId);
         if(!session)fail('挑战记录不存在，请重新开始');
@@ -83,7 +87,7 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
         const existing=db.prepare('SELECT score,stars,accuracy FROM scores WHERE id=?').get(b.id);
         if(existing){json(res,200,{saved:true,...existing});return;}
         let result;try{result=calculateResult(b.events,session.total,b.elapsed);}catch(e){fail(e.message);}
-        db.prepare('INSERT INTO scores (id,player_id,name,unit,title,score,elapsed,accuracy,stars,at) VALUES (?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING').run(session.id,session.player_id,b.name.trim(),session.unit,session.title,result.score,b.elapsed,result.accuracy,result.stars,now());
+        db.prepare('INSERT INTO scores (id,player_id,name,region,unit,title,score,elapsed,accuracy,stars,at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING').run(session.id,session.player_id,b.name.trim(),region,session.unit,session.title,result.score,b.elapsed,result.accuracy,result.stars,now());
         json(res,200,{saved:true,...result});return;
       }
       if(url.pathname.startsWith('/api/'))throw new HttpError(404,'接口不存在');

@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "critical lion and both sprite atlases decode with external PNG/WebP requests blocked; legacy default migrates to Holly LU / 上海 without losing progress",
+    "editable profile region persists; rankings show city directly after name with centered scores at four widths; About credits both producers",
+    "native sharing payload, cancellation, unsupported API and denied clipboard; poster still renders offline art and QR decodes to selected unit under /Game/",
+    "WeChat user agent shows top-right share guidance and preserves selected unit; guide closes cleanly; custom nicknames/regions stay unchanged"
+  ],
+  "errors": [],
+  "blockedImageRequests": [],
+  "passed": true
+}

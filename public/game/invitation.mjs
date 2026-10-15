@@ -1,3 +1,4 @@
+import {assetURL} from './assets.mjs';
 export function invitationURL(address, key) {
   const current = new URL(address);
   if (!['https:', 'http:'].includes(current.protocol)) throw new Error('请在网页中生成邀请');
@@ -19,7 +20,7 @@ function loadImage(src) {
 
 export async function createInvitationPoster({url, title, score, preview = false}) {
   const [{default: qrcode}, lion] = await Promise.all([
-    import('./vendor/qrcode.mjs'), loadImage(new URL('./assets/lion.png', import.meta.url).href)
+    import('./vendor/qrcode.mjs'), loadImage(assetURL('lion'))
   ]);
   const canvas = document.createElement('canvas');
   canvas.width = 720; canvas.height = 1080;
