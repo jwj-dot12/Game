@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#73d2dd">
+  <meta name="description" content="和小狮子一起学英语！10个单元的英汉配对挑战、自定义词库、阶段目标、联网排行榜和成长成就。">
+  <title>单词消消乐 · 词汇探险岛</title>
+  <link rel="icon" href="assets/lion.png">
+  <link rel="stylesheet" href="styles.css?v=20261015-ui6">
+</head>
+<body>
+  <svg class="title-filter-defs" aria-hidden="true" width="0" height="0" xmlns="http://www.w3.org/2000/svg"><defs><filter id="title-sticker-outline" x="-12%" y="-30%" width="124%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="2.4" result="expanded"/><feFlood flood-color="#fffdf3" result="white"/><feComposite in="white" in2="expanded" operator="in" result="outline"/><feMerge><feMergeNode in="outline"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
+  <div id="splash" class="splash" role="status"><div class="brand-mark">W<span>★</span></div><h2>单词消消乐</h2><div class="loading-dots"><i></i><i></i><i></i></div><p>小狮子正在准备单词卡片…</p></div>
+  <div class="sky-deco" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>
+  <header class="topbar">
+    <button class="brand" id="brandHome" aria-label="返回游戏首页"><span class="brand-mark">W<span>★</span></span><span>单词消消乐<small>WORD POP ADVENTURE</small></span></button>
+    <nav aria-label="主导航"><button class="nav-button" data-dialog="ranking" aria-label="排行榜"><span>🏆</span><span class="nav-label">排行榜</span></button><button class="nav-button" data-dialog="achievements" aria-label="成就馆"><span>🎖️</span><span class="nav-label">成就馆</span><i id="achievementDot" hidden></i></button><button class="square-button" data-dialog="settings" aria-label="设置">⚙</button></nav>
+    <button class="profile" data-dialog="settings"><span class="avatar">🦁</span><span id="playerName">小小探险家</span><span class="profile-chevron" aria-hidden="true"></span></button>
+  </header>
+  <main id="homeScreen">
+    <section class="hero">
+      <div class="hero-copy"><div class="eyebrow"><span aria-hidden="true"></span> 上海四年级英语 · 快乐学单词 <span aria-hidden="true"></span></div><h1><span class="title-wordmark">单词<span>消消乐</span></span><i class="title-spark title-spark-right" aria-hidden="true">✦</i><i class="title-spark title-spark-left" aria-hidden="true">✦</i></h1><p>把单词配成对，让进步看得见！</p><div class="hero-tags"><span>🔊 听一听</span><span>🧩 配一配</span><span>⭐ 摘星星</span></div></div>
+      <div class="hero-art"><div class="speech-bubble">今天也要闪闪发光呀！<span>LET’S PLAY!</span></div><img src="assets/lion.png" alt="抱着单词书的小狮子学习伙伴" id="heroLion"><span class="floating-star star-one" aria-hidden="true">★</span><span class="floating-star star-two" aria-hidden="true">✦</span></div>
+      <div class="mode-menu" aria-label="游戏模式"><button class="candy-button yellow mode-button" data-action="mode-unit"><span class="mode-label"><span class="mode-icon">🗺️</span><b>单元闯关</b></span><small>LEVEL ADVENTURE</small></button><button class="candy-button blue mode-button" data-action="mode-library"><span class="mode-label"><span class="mode-icon">📚</span><b>我的词库</b></span><small>MY WORD COLLECTION</small></button><button class="candy-button green mode-button" data-action="mode-challenge"><span class="mode-label"><span class="mode-icon">🚀</span><b>综合挑战</b></span><small>QUICK CHALLENGE</small></button></div>
+    </section>
+    <div class="home-layout">
+      <section class="panel adventure-panel" aria-labelledby="adventureTitle">
+        <div class="section-heading"><div><span class="section-icon">🗺️</span><h2 id="adventureTitle">我的词汇探险</h2></div><span class="small-pill">10 个单元 · 自由挑战</span></div>
+        <div class="island-tabs" role="group" aria-label="选择挑战模式"><button class="active" id="textbookTab">探索单元</button><button id="libraryTab">我的词库</button><button id="challengeBtn">综合挑战</button></div>
+        <div class="unit-grid" id="unitGrid"></div>
+        <div class="selected-unit" id="selectedUnit"></div>
+        <div class="howto-strip"><span class="howto-number">1</span>点击英文<span class="howto-arrow">→</span><span class="howto-number">2</span>找到中文<span class="howto-arrow">→</span><span class="howto-number">3</span>配对消除<span class="howto-tip">点英文还能听发音哦</span></div>
+      </section>
+      <aside class="side-column">
+        <section class="panel progress-panel"><div class="section-heading"><div><span class="section-icon">🌟</span><h2>成长小档案</h2></div><span class="tiny-label">本机记录</span></div><div class="growth-stats" id="growthStats"></div><div class="growth-caption"><span>集齐单元星星</span><b id="starProgressText">0 / 30</b></div><div class="progress-track"><div id="starProgress"></div></div><p class="encouragement" id="encouragement">每一次配对，都是一点点进步。</p></section>
+        <section class="panel goal-panel"><div class="section-heading"><div><span class="section-icon">🎯</span><h2>下一站目标</h2></div></div><div id="nextGoal"></div><div class="goal-reward"><span>🎁</span><div><b>把努力变成小勋章</b><small>完成目标，解锁专属成就</small></div><button class="round-link" data-dialog="achievements" aria-label="查看所有成就"></button></div></section>
+        <button class="rank-promo" data-dialog="ranking"><span class="promo-trophy">🏆</span><span><strong>和单词高手一起挑战</strong><small>看看大家的联网排行榜 <b>→</b></small></span></button>
+      </aside>
+    </div>
+    <footer><span>🌱 每天一小步，词汇一大步</span><button data-dialog="help">玩法说明</button><span>进度保存在本机 · 排名联网同步</span></footer>
+    <div class="home-landscape" aria-hidden="true"><i class="land-cloud cloud-left"></i><i class="land-cloud cloud-middle"></i><i class="land-cloud cloud-right"></i><i class="land-hill hill-back"></i><i class="land-hill hill-front"></i><span class="grass-sprig grass-one"></span><span class="grass-sprig grass-two"></span><span class="grass-sprig grass-three"></span><span class="tiny-flower flower-one"></span><span class="tiny-flower flower-two"></span></div>
+  </main>
+  <main id="gameScreen" hidden>
+    <div class="game-heading"><button class="soft-button" id="backBtn">‹ 返回探险</button><div><span id="gameUnit" class="eyebrow"></span><h1 id="gameTitle"></h1></div><button class="square-button" data-dialog="pause" aria-label="暂停游戏">Ⅱ</button></div>
+    <div class="game-layout"><section class="panel board-panel"><div class="game-hud"><div><small>本关得分</small><b class="score-number" id="scoreVal">0</b></div><div><small>连续配对</small><b id="comboVal">🔥 ×0</b></div><div><small>挑战用时</small><b id="timeVal">00:00</b></div></div><div class="round-label"><b id="roundLabel"></b><span id="roundProgress"></span></div><div class="progress-track game-progress"><div id="gameProgress"></div></div><div id="board" class="board" aria-label="单词配对棋盘"></div><div class="board-bottom"><span id="gameTip" role="status">点击英文和它的中文意思，把它们配成对！</span><button class="candy-button yellow small" id="hintBtn">💡 提示 <small>−5 分</small></button></div></section><aside class="side-column"><section class="panel stage-panel"><div class="section-heading"><div><span class="section-icon">🎯</span><h2>本关小目标</h2></div></div><div id="stageList"></div><div class="level-total" id="levelTotal"></div></section><section class="panel companion"><img src="assets/lion.png" alt="小狮子为你加油"><b id="companionText">不着急，认真想一想！</b><p>连续 5 秒内配对成功<br>可以获得连击加分哦</p></section></aside></div>
+  </main>
+  <dialog id="gameDialog" aria-labelledby="dialogTitle"><div class="dialog-frame"><div class="dialog-ribbon" id="dialogTitle"></div><button id="closeDialog" class="dialog-close" aria-label="关闭弹窗"></button><div id="dialogContent"></div></div></dialog>
+  <div id="toastArea" aria-live="polite" aria-atomic="true"></div>
+  <div id="effects" aria-hidden="true"></div>
+  <script src="config.js?v=20261015-ui6"></script><script src="words.js"></script><script type="module" src="icons.js"></script><script type="module" src="app.js?v=20261015-ui6"></script>
+</body>
+</html>
