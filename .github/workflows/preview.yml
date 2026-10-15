@@ -18,6 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - run: npm ci
       - run: npm test
       - run: node scripts/build-preview.mjs
       - uses: actions/upload-pages-artifact@v4
@@ -47,6 +48,9 @@ jobs:
                       with urllib.request.urlopen(base + name + '?verify=' + os.environ['GITHUB_SHA'], timeout=25) as response:
                           return response.read().decode('utf-8')
                   html = fetch('index.html')
+                  assert len(html.encode('utf-8')) < 500000, 'Initial HTML is too large'
+                  assert html.index('id="splash"') < 7000, 'Visible loader must precede large resources'
+                  assert 'bootRetry' in html, 'Missing slow-load retry action'
                   match = re.search(r'window.WORD_POP_ASSETS=(\{.*?\});', html)
                   assert match, 'Bundled illustrations missing from published HTML'
                   assets = json.loads(match.group(1))

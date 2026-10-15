@@ -1,0 +1,42 @@
+{
+  "checks": [
+    "Offline import: words.txt",
+    "Offline import: words-gbk.txt",
+    "Offline import: words.docx",
+    "Offline import: words.xlsx",
+    "Offline import: words.xls",
+    "Offline import: words.png",
+    "Offline import: words.jpg",
+    "Custom words, a completed round, local ranking with name/region and progress survive reload; all six embedded cheers decode"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "failedRequests": [],
+  "audio": [
+    [
+      "great",
+      1.1643537414965985
+    ],
+    [
+      "amazing",
+      1.3093424036281178
+    ],
+    [
+      "excellent",
+      1.3143310657596372
+    ],
+    [
+      "unbelievable",
+      1.3743310657596373
+    ],
+    [
+      "great-job",
+      1.3243083900226758
+    ],
+    [
+      "fantastic",
+      2.8541950113378687
+    ]
+  ],
+  "passed": true
+}

@@ -1,5 +1,5 @@
 const names=['lion','icons-a','icons-b'];
-export function assetURL(name){return window.WORD_POP_ASSETS?.[name]||new URL(`./assets/${name}.webp`,import.meta.url).href;}
+export function assetURL(name){return window.WORD_POP_ASSETS?.[name]||new URL(`./assets/${name}.${name==='lock'?'svg':'webp'}`,import.meta.url).href;}
 function load(src){return new Promise((resolve,reject)=>{const image=new Image(),timeout=setTimeout(()=>{image.src='';reject(Error('timeout'));},9000);image.onload=()=>{clearTimeout(timeout);resolve(src);};image.onerror=()=>{clearTimeout(timeout);reject(Error('image load failed'));};image.src=src;});}
 let busy=false;
 export async function ensureVisualAssets(){

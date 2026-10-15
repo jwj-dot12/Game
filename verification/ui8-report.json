@@ -1,0 +1,84 @@
+{
+  "checks": [
+    "512 Kbps / 150ms latency: smaller bundled page paints a loader early, becomes interactive faster, and removes root redirect",
+    "Word .docx, Excel .xlsx/.xls, TXT, real PNG/JPG bilingual OCR all produce three editable word pairs; icon and title share a line; heavy assets stay unloaded on homepage",
+    "cancelling OCR or importing a damaged file preserves the existing word list",
+    "standalone file:// HTML imports DOCX/XLSX and real PNG/JPG OCR with all HTTP requests blocked, then starts the imported three-word game"
+  ],
+  "timing": {
+    "before": {
+      "interactiveMs": 12756,
+      "fcp": 10773.199999999255,
+      "documentRequests": 1,
+      "url": "http://127.0.0.1:59594/old/game/index.html"
+    },
+    "after": {
+      "interactiveMs": 3900,
+      "fcp": 308.80000000074506,
+      "documentRequests": 1,
+      "url": "http://127.0.0.1:59594/Game/"
+    }
+  },
+  "errors": [],
+  "imports": [
+    {
+      "ext": "txt",
+      "error": "",
+      "paste": ""
+    },
+    {
+      "ext": "docx",
+      "error": "",
+      "paste": ""
+    },
+    {
+      "ext": "xlsx",
+      "error": "",
+      "paste": ""
+    },
+    {
+      "ext": "xls",
+      "error": "",
+      "paste": ""
+    },
+    {
+      "ext": "png",
+      "error": "",
+      "paste": "",
+      "recognized": [
+        [
+          "apple",
+          "芋果"
+        ],
+        [
+          "school",
+          "学校"
+        ],
+        [
+          "banana",
+          "香仿"
+        ]
+      ]
+    },
+    {
+      "ext": "jpg",
+      "error": "",
+      "paste": "",
+      "recognized": [
+        [
+          "apple",
+          "芋果"
+        ],
+        [
+          "school",
+          "学校"
+        ],
+        [
+          "banana",
+          "香焦"
+        ]
+      ]
+    }
+  ],
+  "passed": true
+}

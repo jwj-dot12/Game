@@ -1,8 +1,19 @@
 # 单词消消乐 · 词汇探险岛
 
-独立源码版 **1.7.0 / ui7**，直接维护本仓库，不依赖 Lovable 或 ChatGPT 登录。
+独立源码版 **1.8.0 / ui8**，直接维护本仓库，不依赖 Lovable 或 ChatGPT 登录。
+
+## 离线版（当前首选）
+
+用户暂不注册云账号，当前优先离线使用。构建后直接用电脑 Edge / Chrome 打开 `dist-preview/word-pop-offline.html`，无需安装 Node.js、启动服务器或登录。
+单文件包含插画、音效、Word / Excel 读取组件及中英文图片识别数据，断网仍可导入词表和游戏；设备朗读的可用声音取决于系统安装的语音包。
+进度和榜单保存在当前浏览器，建议固定文件位置、使用同一浏览器；不要用隐私模式。自建词库可导出备份。
+离线文件不能生成朋友可访问的公网地址；需要分享时可把离线文件发送给朋友，各自保留本机成绩。
 
 ## 最新功能
+
+- “导入文件”与文件夹图标同一行，支持 Word（.docx）、Excel（.xlsx/.xls）、PNG、JPG、TXT；保留 CSV / TSV / JSON 兼容。文件不超过 10 MB。
+- 图片在本机识别，提供进度、取消和可编辑预览；图片文字可能识别错误，保存前请校对。损坏文件或取消导入不会覆盖原词表。
+- 首屏先显示加载界面，再读取压缩后的素材；初始 HTML 约 402 KB，重型导入工具按需加载。等待过久显示重试入口。
 
 - 默认昵称 Holly LU、地域上海，可在设置中修改；榜单昵称后显示地域。关于我们列出制作人 Yvonne Zhao、Ajuna Jiang。
 - 邀请弹窗增加“分享至微信”：微信内提示右上角发送给朋友，其他支持的浏览器打开系统分享面板；不支持时可复制链接。
@@ -16,7 +27,7 @@
 
 ## 本地完整版本
 
-安装 Node.js 24 或更高版本，运行 `npm start`，打开 <http://127.0.0.1:5182/game/index.html>。无需安装 npm 依赖。
+安装 Node.js 24 或更高版本，首次执行 `npm ci` 和 `npm run prepare:imports`，再运行 `npm start`，打开 <http://127.0.0.1:5182/game/index.html>。准备后的运行阶段无需联网安装依赖。
 Node.js 服务与 SQLite 提供真实联网排行榜，数据库默认为 `data/game.sqlite`。
 
 运行 `npm test` 验证。自动测试覆盖计分、会话归属、重复提交、词库隔离、北京时间周榜、输入校验、限流、地域持久化、旧库迁移和邀请隐私。
@@ -24,11 +35,11 @@ Node.js 服务与 SQLite 提供真实联网排行榜，数据库默认为 `data/
 
 ## 免费 H5 预览
 
-运行 `node scripts/build-preview.mjs`，将 `dist-preview/` 部署到静态托管。
+先执行 `npm ci`，再运行 `npm run build:preview`，将 `dist-preview/` 部署到静态托管。
 仓库已提供 `.github/workflows/preview.yml`：main 更新后自动测试、构建和发布。
 
 仓库已启用 Pages，访问 [免费 H5 预览](https://jwj-dot12.github.io/Game/)。
-2026-10-15 首次发布成功，用户已确认微信可打开页面。本次更新修复其反馈的插画缺失，并补充微信分享与玩家资料功能。
+此前用户曾确认微信可以打开，随后反馈手机加载缓慢、电脑连接中断。ui8 改善了页面体积与加载流程，但不能修复 GitHub 域名的网络连接；现改用离线版，不创建新的云资源。
 后续提交到 main 会自动部署；在 Actions 中查看 **Publish H5 preview** 的 build、deploy 结果。
 
 预览版无需托管后端，支持游戏、词库、成就、海报与邀请链接；明确显示“本机预览榜”，只读当前浏览器的真实成绩。
@@ -60,3 +71,5 @@ API：`POST /api/public/game` 创建挑战，`GET /api/public/rankings` 查询�
 旧站真实数据库没有删除，也没有自动迁入本项目；正式切换时需安排成绩迁移，不要用测试数据库覆盖生产库。
 
 二维码模块来自 Kazuhiko Arase 的 MIT 开源项目，代码和许可证在 `public/game/vendor/`，运行时不依赖第三方 CDN。
+
+Word / Excel / 图片解析在浏览器本机进行，不把导入文件上传到服务器。第三方解析组件及许可证见 `public/game/vendor/README.md`。

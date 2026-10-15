@@ -8,3 +8,7 @@ dist-preview/
 qa/
 !qa/ui5-report.json
 !qa/invite-report.json
+
+public/game/vendor/ocr/
+public/game/vendor/fflate.mjs
+public/game/vendor/LICENSE-fflate.txt

@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "checks": [
+    "Stalled HTML stream displays the loader, then retry after 8 seconds; resuming the stream opens the game"
+  ]
+}
