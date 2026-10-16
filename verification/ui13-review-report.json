@@ -1,0 +1,43 @@
+{
+  "version": "ui13",
+  "checks": [
+    {
+      "width": 320,
+      "pointsRow": "aligned",
+      "shop": "embedded artwork loaded",
+      "about": "head clipped at bottom",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "pointsRow": "aligned",
+      "shop": "embedded artwork loaded",
+      "about": "head clipped at bottom",
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "pointsRow": "aligned",
+      "shop": "embedded artwork loaded",
+      "about": "head clipped at bottom",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "pointsRow": "aligned",
+      "shop": "embedded artwork loaded",
+      "about": "head clipped at bottom",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "pointsRow": "aligned",
+      "shop": "embedded artwork loaded",
+      "about": "head clipped at bottom",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

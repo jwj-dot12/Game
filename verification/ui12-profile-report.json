@@ -1,0 +1,10 @@
+{
+  "version": "ui12",
+  "checks": [
+    "Old Shanghai default migrates to Shanghai Jiading; historical scores migrate once; 5 responsive widths; upload, invalid file recovery, avatar selection, edited profile reload, unsaved changes and shop roundtrip verified",
+    "Completed challenge awards exactly its final score; points persist after reload with old scores retained"
+  ],
+  "errors": [],
+  "externalRequests": [],
+  "passed": true
+}

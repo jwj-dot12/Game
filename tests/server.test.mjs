@@ -45,6 +45,7 @@ test('scores are owned by a session, calculated, idempotent and ranked per playe
  assert.equal((await send('/api/public/rankings',{...payload,playerId:randomUUID()})).status,400);
  assert.equal((await send('/api/public/rankings',{...payload,events:events.slice(0,1)})).status,400);
  assert.equal((await send('/api/public/rankings',{...payload,elapsed:100})).status,400);
+ for(const name of ['快乐太阳花朵呀','ＦＵＣＫ','傻-逼'])assert.equal((await send('/api/public/rankings',{...payload,name})).status,400);
  const saved=await send('/api/public/rankings',payload);assert.equal(saved.status,200);assert.equal(saved.body.score,35);assert.equal(saved.body.stars,3);
  assert.deepEqual((await send('/api/public/rankings',payload)).body,saved.body);
  const second=(await send('/api/public/game',{playerId,unit:'custom:new',count:2,words})).body;advance(5000);
@@ -103,7 +104,7 @@ test('legacy scores migrate with Shanghai default and old clients can submit',as
   const playerId=randomUUID(),post=async(route,body)=>{const res=await fetch(base+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(res.status,200);return res.json();};
   const session=await post('/api/public/game',{playerId,unit:'custom:new',count:2,words});
   await post('/api/public/rankings',{playerId,id:session.id,name:'旧客户端',elapsed:2,events});
-  const row=(await (await fetch(base+`/api/public/rankings?unit=${session.unit}`)).json()).rows[0];assert.equal(row.region,'上海');
+  const row=(await (await fetch(base+`/api/public/rankings?unit=${session.unit}`)).json()).rows[0];assert.equal(row.region,'上海·嘉定');
  }finally{
   if(server?.listening)await new Promise(r=>server.close(r));
   for(const suffix of ['','-shm','-wal'])await rm(dbPath+suffix,{force:true});await rmdir(dir);

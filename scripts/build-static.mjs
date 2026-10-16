@@ -7,6 +7,7 @@ const root=new URL('../',import.meta.url),out=new URL('../dist-preview/',import.
 await mkdir(out,{recursive:true});await cp(new URL('public/',root),out,{recursive:true});
 const assets={};
 for(const name of ['lion','icons-a','icons-b'])assets[name]='data:image/webp;base64,'+(await readFile(new URL(`game/assets/${name}-small.webp`,out))).toString('base64');
+for(const name of ['lion-shop','lion-peek'])assets[name]='data:image/webp;base64,'+(await readFile(new URL(`game/assets/${name}.webp`,out))).toString('base64');
 assets.lock='data:image/svg+xml;base64,'+(await readFile(new URL('game/assets/lock.svg',out))).toString('base64');
 const css=(await transform(await readFile(new URL('game/styles.css',out),'utf8'),{loader:'css',minify:true,target:'safari15'})).code;
 const words=await readFile(new URL('game/words.js',out),'utf8');
@@ -36,6 +37,6 @@ const ocrClient=await readFile(new URL('game/vendor/ocr/tesseract.min.js',out),'
 const offlineCode=(await build(bundleOptions)).outputFiles[0].text.replaceAll('</script','<\\/script');
 const offline=page.replace(js,()=>offlineCode).replace('<head>','<head><base href="./game/">').replace('window.WORD_POP_CONFIG={preview:true};',()=>'window.WORD_POP_CONFIG={preview:true,offline:true};window.WORD_POP_AUDIO='+JSON.stringify(audio)+';window.WORD_POP_OCR='+JSON.stringify(ocr)+';'+ocrClient.replaceAll('</script','<\\/script')+';'+xlsx.replaceAll('</script','<\\/script')+';');
 await writeFile(new URL('word-pop-offline.html',out),offline);
-const metrics={htmlBytes:Buffer.byteLength(page),gzipBytes:gzipSync(page).length,firstShellBytes:Buffer.byteLength(page.slice(0,page.indexOf('<style>'+css))),version:'ui8'};
+const metrics={htmlBytes:Buffer.byteLength(page),gzipBytes:gzipSync(page).length,firstShellBytes:Buffer.byteLength(page.slice(0,page.indexOf('<style>'+css))),version:'ui13'};
 await writeFile(new URL('build-metrics.json',out),JSON.stringify(metrics,null,2));
 console.log(JSON.stringify(metrics));

@@ -54,14 +54,14 @@ jobs:
                   match = re.search(r'window.WORD_POP_ASSETS=(\{.*?\});', html)
                   assert match, 'Bundled illustrations missing from published HTML'
                   assets = json.loads(match.group(1))
-                  for name in ['lion', 'icons-a', 'icons-b']:
+                  for name in ['lion', 'icons-a', 'icons-b', 'lion-shop', 'lion-peek']:
                       content = base64.b64decode(assets[name].split(',', 1)[1], validate=True)
                       assert content[:4] == b'RIFF' and content[8:12] == b'WEBP', name
                   app = fetch('app.js')
                   assert 'Holly LU' in app and 'share-wechat' in app and 'Ajuna Jiang' in app
-                  for module in ['assets.mjs', 'invitation.mjs', 'styles.css', 'icons.js', 'words.js', 'config.js']:
+                  for module in ['assets.mjs', 'invitation.mjs', 'profile.mjs', 'nickname.mjs', 'styles.css', 'icons.js', 'words.js', 'config.js']:
                       assert len(fetch(module)) > 20, module
-                  print('Published H5 verified: 3 embedded WebP illustrations, player profile, share entry, modules.')
+                  print('Published H5 verified: 5 embedded WebP illustrations, player profile, share entry, modules.')
                   break
               except Exception:
                   if attempt == 5:

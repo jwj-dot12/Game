@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { randomUUID, createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { calculateResult } from './server/game-rules.mjs';
+import { validateNickname } from './public/game/nickname.mjs';
 
 const root=path.dirname(fileURLToPath(import.meta.url));
 const publicRoot=path.join(root,'public');
@@ -76,9 +77,9 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
       if(req.method==='POST'&&url.pathname==='/api/public/rankings'){
         const b=await readJSON(req,100000);
         if(typeof b.id!=='string'||!uuidPattern.test(b.id)||typeof b.playerId!=='string'||!playerPattern.test(b.playerId))fail('挑战标识无效');
-        if(typeof b.name!=='string'||!b.name.trim()||b.name.trim().length>16)fail('请填写 1–16 字的昵称');
+        const nickname=validateNickname(b.name);if(!nickname.ok)fail(nickname.error);
         if(b.region!==undefined&&(typeof b.region!=='string'||b.region.trim().length>12))fail('地域最多 12 字');
-        const region=b.region?.trim()||'上海';
+        const region=b.region?.trim()||'上海·嘉定';
         if(!Number.isInteger(b.elapsed)||b.elapsed<1||b.elapsed>7200)fail('挑战时间无效');
         const session=db.prepare('SELECT * FROM game_sessions WHERE id=? AND player_id=?').get(b.id,b.playerId);
         if(!session)fail('挑战记录不存在，请重新开始');
@@ -87,7 +88,7 @@ export async function createGameServer({dbPath=process.env.DATABASE_PATH||path.j
         const existing=db.prepare('SELECT score,stars,accuracy FROM scores WHERE id=?').get(b.id);
         if(existing){json(res,200,{saved:true,...existing});return;}
         let result;try{result=calculateResult(b.events,session.total,b.elapsed);}catch(e){fail(e.message);}
-        db.prepare('INSERT INTO scores (id,player_id,name,region,unit,title,score,elapsed,accuracy,stars,at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING').run(session.id,session.player_id,b.name.trim(),region,session.unit,session.title,result.score,b.elapsed,result.accuracy,result.stars,now());
+        db.prepare('INSERT INTO scores (id,player_id,name,region,unit,title,score,elapsed,accuracy,stars,at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO NOTHING').run(session.id,session.player_id,nickname.name,region,session.unit,session.title,result.score,b.elapsed,result.accuracy,result.stars,now());
         json(res,200,{saved:true,...result});return;
       }
       if(url.pathname.startsWith('/api/'))throw new HttpError(404,'接口不存在');

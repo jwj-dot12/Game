@@ -7,7 +7,7 @@
   <meta name="description" content="和小狮子一起学英语！10个单元的英汉配对挑战、自定义词库、阶段目标、联网排行榜和成长成就。">
   <title>单词消消乐 · 词汇探险岛</title>
   <link rel="icon" href="assets/lion.webp">
-  <link rel="stylesheet" href="styles.css?v=20261015-ui8">
+  <link rel="stylesheet" href="styles.css?v=20261016-ui13">
 </head>
 <body>
   <svg class="title-filter-defs" aria-hidden="true" width="0" height="0" xmlns="http://www.w3.org/2000/svg"><defs><filter id="title-sticker-outline" x="-12%" y="-30%" width="124%" height="180%" color-interpolation-filters="sRGB"><feMorphology in="SourceAlpha" operator="dilate" radius="2.4" result="expanded"/><feFlood flood-color="#fffdf3" result="white"/><feComposite in="white" in2="expanded" operator="in" result="outline"/><feMerge><feMergeNode in="outline"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs></svg>
@@ -16,11 +16,11 @@
   <header class="topbar">
     <button class="brand" id="brandHome" aria-label="返回游戏首页"><span class="brand-mark">W<span>★</span></span><span>单词消消乐<small>WORD POP ADVENTURE</small></span></button>
     <nav aria-label="主导航"><button class="nav-button" data-dialog="ranking" aria-label="排行榜"><span>🏆</span><span class="nav-label">排行榜</span></button><button class="nav-button" data-dialog="achievements" aria-label="成就馆"><span>🎖️</span><span class="nav-label">成就馆</span><i id="achievementDot" hidden></i></button><button class="square-button" data-dialog="settings" aria-label="设置">⚙</button></nav>
-    <button class="profile" data-dialog="settings"><span class="avatar">🦁</span><span id="playerName">Holly LU</span><span class="profile-chevron" aria-hidden="true"></span></button>
+    <button class="profile" data-dialog="profile" aria-label="我的"><span class="avatar" id="playerAvatar">🦁</span><span id="playerName">Holly LU</span><span class="profile-chevron" aria-hidden="true"></span></button>
   </header>
   <main id="homeScreen">
     <section class="hero">
-      <div class="hero-copy"><div class="eyebrow"><span aria-hidden="true"></span> 上海四年级英语 · 快乐学单词 <span aria-hidden="true"></span></div><h1><span class="title-wordmark">单词<span>消消乐</span></span><i class="title-spark title-spark-right" aria-hidden="true">✦</i><i class="title-spark title-spark-left" aria-hidden="true">✦</i></h1><p>把单词配成对，让进步看得见！</p><div class="hero-tags"><span>🔊 听一听</span><span>🧩 配一配</span><span>⭐ 摘星星</span></div></div>
+      <div class="hero-copy"><div class="eyebrow"><span aria-hidden="true"></span><span class="eyebrow-text">上海四年级英语 · <b id="classTag">太阳花中队</b></span><span aria-hidden="true"></span></div><h1><span class="title-wordmark">单词<span>消消乐</span></span><i class="title-spark title-spark-right" aria-hidden="true">✦</i><i class="title-spark title-spark-left" aria-hidden="true">✦</i></h1><p>把单词配成对，让进步看得见！</p><div class="hero-tags"><span>🔊 听一听</span><span>🧩 配一配</span><span>⭐ 摘星星</span></div></div>
       <div class="hero-art"><div class="speech-bubble">今天也要闪闪发光呀！<span>LET’S PLAY!</span></div><img data-asset="lion" src="assets/lion.webp" alt="抱着单词书的小狮子学习伙伴" id="heroLion" fetchpriority="high"><span class="floating-star star-one" aria-hidden="true">★</span><span class="floating-star star-two" aria-hidden="true">✦</span></div>
       <div class="mode-menu" aria-label="游戏模式"><button class="candy-button yellow mode-button" data-action="mode-unit"><span class="mode-label"><span class="mode-icon">🗺️</span><b>单元闯关</b></span><small>LEVEL ADVENTURE</small></button><button class="candy-button blue mode-button" data-action="mode-library"><span class="mode-label"><span class="mode-icon">📚</span><b>我的词库</b></span><small>MY WORD COLLECTION</small></button><button class="candy-button green mode-button" data-action="mode-challenge"><span class="mode-label"><span class="mode-icon">🚀</span><b>综合挑战</b></span><small>QUICK CHALLENGE</small></button></div>
     </section>
@@ -35,10 +35,11 @@
       <aside class="side-column">
         <section class="panel progress-panel"><div class="section-heading"><div><span class="section-icon">🌟</span><h2>成长小档案</h2></div><span class="tiny-label">本机记录</span></div><div class="growth-stats" id="growthStats"></div><div class="growth-caption"><span>集齐单元星星</span><b id="starProgressText">0 / 30</b></div><div class="progress-track"><div id="starProgress"></div></div><p class="encouragement" id="encouragement">每一次配对，都是一点点进步。</p></section>
         <section class="panel goal-panel"><div class="section-heading"><div><span class="section-icon">🎯</span><h2>下一站目标</h2></div></div><div id="nextGoal"></div><div class="goal-reward"><span>🎁</span><div><b>把努力变成小勋章</b><small>完成目标，解锁专属成就</small></div><button class="round-link" data-dialog="achievements" aria-label="查看所有成就"></button></div></section>
+        <button class="shop-entry" data-dialog="shop"><span class="shop-entry-icon">🎁</span><span><strong>积分商城</strong><small>PK 道具兑换 · 敬请期待</small></span><span class="entry-chevron" aria-hidden="true">›</span></button>
         <button class="rank-promo" data-dialog="ranking"><span class="promo-trophy">🏆</span><span><strong>和单词高手一起挑战</strong><small>看看大家的联网排行榜 <b>→</b></small></span></button>
       </aside>
     </div>
-    <footer><span>🌱 每天一小步，词汇一大步</span><button data-dialog="help">玩法说明</button><button data-dialog="about">关于我们</button><span>进度保存在本机 · 排名联网同步</span></footer>
+    <footer><span>🌱 每天一小步，词汇一大步</span><div class="footer-actions"><button class="footer-button" data-dialog="help">玩法说明</button><button class="footer-button" data-dialog="about">关于我们</button></div></footer>
     <div class="home-landscape" aria-hidden="true"><i class="land-cloud cloud-left"></i><i class="land-cloud cloud-middle"></i><i class="land-cloud cloud-right"></i><i class="land-hill hill-back"></i><i class="land-hill hill-front"></i><span class="grass-sprig grass-one"></span><span class="grass-sprig grass-two"></span><span class="grass-sprig grass-three"></span><span class="tiny-flower flower-one"></span><span class="tiny-flower flower-two"></span></div>
   </main>
   <main id="gameScreen" hidden>
@@ -48,6 +49,6 @@
   <dialog id="gameDialog" aria-labelledby="dialogTitle"><div class="dialog-frame"><div class="dialog-ribbon" id="dialogTitle"></div><button id="closeDialog" class="dialog-close" aria-label="关闭弹窗"></button><div id="dialogContent"></div></div></dialog>
   <div id="toastArea" aria-live="polite" aria-atomic="true"></div>
   <div id="effects" aria-hidden="true"></div>
-  <script src="config.js?v=20261015-ui8"></script><script src="words.js"></script><script type="module" src="icons.js"></script><script type="module" src="app.js?v=20261015-ui8"></script>
+  <script src="config.js?v=20261016-ui13"></script><script src="words.js"></script><script type="module" src="icons.js"></script><script type="module" src="app.js?v=20261016-ui13"></script>
 </body>
 </html>
